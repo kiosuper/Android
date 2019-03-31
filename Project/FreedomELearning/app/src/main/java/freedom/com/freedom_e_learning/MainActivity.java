@@ -3,157 +3,194 @@ package freedom.com.freedom_e_learning;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.SignInButton;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.Task;
+import com.bumptech.glide.Glide;
+import com.facebook.login.LoginManager;
+import com.google.firebase.auth.FirebaseUser;
 
-import java.util.Arrays;
+import de.hdodenhof.circleimageview.CircleImageView;
+import freedom.com.freedom_e_learning.listening.ListeningActivity;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-    private static final String EMAIL = "email";
-    public static final int RC_SIGN_IN = 9001;
 
-    CallbackManager callbackManager;
-    LoginButton loginButton;
-    SignInButton signInButton;
-    GoogleSignInClient mGoogleSignInClient;
+    private DatabaseService mData = DatabaseService.getInstance();
+    private LoginManager loginManager = LoginManager.getInstance();
 
-    // Configure sign-in to request the user's ID, email address, and basic
-    // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
-    GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestEmail()
-            .build();
+//    UserSessionManager session = new UserSessionManager(getApplicationContext());
+
+    private CircleImageView imgAvatar;
+    private TextView txtUsername;
+    private TextView txtEmail;
+    FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         setControl();
         setEvents();
-
+        Log.d(TAG, String.valueOf(mData.isSignIn()));
     }
 
     @Override
     protected void onStart() {
-
         super.onStart();
+
+//        mGoogleApiClient.connect();
     }
 
-    public void setControl() {
-        callbackManager = CallbackManager.Factory.create();
-        loginButton = findViewById(R.id.login_button);
-        // Set the dimensions of the sign-in button.
-        signInButton = findViewById(R.id.sign_in_button);
-        signInButton.setSize(SignInButton.SIZE_STANDARD);
+    private void setControl() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-        // Build a GoogleSignInClient with the options specified by gso.
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        View headerView = navigationView.getHeaderView(0);
+        imgAvatar = headerView.findViewById(R.id.imageAvatar);
+        txtUsername = headerView.findViewById(R.id.txtUsername);
+        txtEmail = headerView.findViewById(R.id.txtEmail);
     }
 
-    public void setEvents() {
-        loginFacebook();
-        loginGoogle();
-    }
+    private void setEvents() {
+        getUserID();
+        setUserInfo();
 
-    public void loginFacebook() {
-        loginButton.setReadPermissions(Arrays.asList(EMAIL));
-        // If you are using in a fragment, call loginButton.setFragment(this);
-
-        // Callback registration
-        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                Log.d(TAG, "onSuccess");
-                Toast.makeText(MainActivity.this, "On Success", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onCancel() {
-                Log.d(TAG, "onCancel");
-                Toast.makeText(MainActivity.this, "On Cancel", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onError(FacebookException exception) {
-                Log.d(TAG, "onError");
-                Toast.makeText(MainActivity.this, "On Error", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    public void loginGoogle() {
-        signInButton.setOnClickListener(new View.OnClickListener() {
+        Button button = findViewById(R.id.btn_listening);
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                signIn();
+                Intent intent = new Intent(MainActivity.this, ListeningActivity.class);
+                startActivity(intent);
             }
         });
+
+        Button test = findViewById(R.id.btn_test);
+        test.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, TestActivity.class);
+                startActivity(intent);
+            }
+        });
+
     }
 
-    private void signIn() {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
+    private void getUserID() {
+        Intent intent = getIntent();
+        if (intent.hasExtra(Constants.USER_ID)) {
+            String mUserID = intent.getStringExtra(Constants.USER_ID);
+        }
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        callbackManager.onActivityResult(requestCode, resultCode, data);
-        super.onActivityResult(requestCode, resultCode, data);
-
-        // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
-            // The Task returned from this call is always completed, no need to attach
-            // a listener.
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            handleSignInResult(task);
-
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
         }
-
     }
 
-    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
-        try {
-            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
 
-            // Signed in successfully, show authenticated UI.
-            Toast.makeText(MainActivity.this, "Signed in successfully, show authenticated UI", Toast.LENGTH_SHORT);
-            Log.d(TAG, "Signed in successfully, show authenticated UI");
-            GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
-            if (acct != null) {
-                String personName = acct.getDisplayName();
-                String personEmail = acct.getEmail();
-                String personId = acct.getId();
-                Uri personPhoto = acct.getPhotoUrl();
-                Log.d(TAG, personName);
-                Log.d(TAG, personEmail);
-                Log.d(TAG, personId);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
 
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_camera) {
+            // Handle the camera action
+        } else if (id == R.id.nav_gallery) {
+
+        } else if (id == R.id.nav_slideshow) {
+
+        } else if (id == R.id.nav_manage) {
+
+        } else if (id == R.id.nav_logout) {
+            Log.d(TAG, String.valueOf(mData.isSignIn()));
+            Toast.makeText(MainActivity.this, "Signed out", Toast.LENGTH_SHORT).show();
+            mData.signOut();
+            if (loginManager != null) {
+                loginManager.logOut();
             } else {
-                Log.d(TAG, "No account");
+//                googleLogOut();
             }
-        } catch (ApiException e) {
-            // The ApiException status code indicates the detailed failure reason.
-            // Please refer to the GoogleSignInStatusCodes class reference for more information.
-            Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
-            Toast.makeText(MainActivity.this, "Signed in Fail", Toast.LENGTH_SHORT);
-            Log.d(TAG, "Signed in failed");
-
+            Log.d(TAG, String.valueOf(mData.isSignIn()));
+            Intent intent = new Intent(MainActivity.this, SignInActivity.class);
+            startActivity(intent);
+            finish();
         }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
+
+    public void setUserInfo() {
+        user = mData.getFirebaseAuth().getCurrentUser();
+        String email = user.getEmail();
+        String userName = user.getDisplayName();
+        Uri linkPhoto = user.getPhotoUrl();
+
+        txtUsername.setText(userName);
+        txtEmail.setText(email);
+        Glide.with(imgAvatar).load(linkPhoto).into(imgAvatar);
+    }
+
+//    private void googleLogOut() {
+//        Auth.GoogleSignInApi.signOut(session.mGoogleApiClient).setResultCallback(
+//                new ResultCallback<Status>() {
+//                    @Override
+//                    public void onResult(Status status) {
+//                        Toast.makeText(MainActivity.this, "G+ loggedOut", Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+//    }
 }
