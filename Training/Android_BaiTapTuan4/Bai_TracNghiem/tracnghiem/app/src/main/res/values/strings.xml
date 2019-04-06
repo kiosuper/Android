@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">tracnghiem</string>
+    <string name="login">Đăng nhập</string>
+    <string name="logout">Thoát</string>
+    <string name="cau1">1/ Con gì bị thương không đau? </string>
+    <string name="cau2">2/ Trong những đáp án sau, động vật nào đẻ trứng? </string>
+    <string name="cau31"></string>
+    <string-array name="values">
+        <item name="value_1">A</item>
+        <item name="value_2">B</item>
+        <item name="value_3">C</item>
+        <item name="value_4">D</item>
+    </string-array>
+</resources>
