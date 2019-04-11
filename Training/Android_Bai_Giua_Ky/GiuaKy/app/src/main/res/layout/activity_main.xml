@@ -1,0 +1,67 @@
+<LinearLayout android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <TextView
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="35dp"
+        android:text="Học viện công nghệ bưu chính viễn thông Na`vi"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textStyle="bold"/>
+
+    <ImageView
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:src="@drawable/logo" />
+   <LinearLayout
+       android:paddingRight="15dp"
+       android:paddingLeft="15dp"
+       android:layout_weight="0.5"
+       android:gravity="center"
+       android:orientation="vertical"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content">
+       <LinearLayout
+
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content">
+           <Button
+               android:id="@+id/btn_dangki"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="Đăng kí"
+               android:layout_weight="1"/>
+           <Button
+               android:id="@+id/btn_sua"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="Sửa"
+               android:layout_weight="1">
+
+           </Button>
+       </LinearLayout>
+       <LinearLayout
+
+           android:layout_marginTop="10dp"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content">
+           <Button
+               android:id="@+id/btn_xem"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="Xem"
+               android:layout_weight="1"/>
+           <Button
+               android:id="@+id/btn_thoat"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="Thoát"
+               android:layout_weight="1"/>
+       </LinearLayout>
+   </LinearLayout>
+</LinearLayout>
