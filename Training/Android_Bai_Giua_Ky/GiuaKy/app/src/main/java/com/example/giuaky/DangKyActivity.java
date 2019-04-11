@@ -64,6 +64,11 @@ public class DangKyActivity extends AppCompatActivity {
                     Toast.makeText(DangKyActivity.this, "Hãy nhập vào số điện thoại", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                //check nếu không tích vào môn học
+                if (check_mon.isEmpty()){
+                    Toast.makeText(DangKyActivity.this, "Bạn phải chọn môn học", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 //check xem đã đăng kí chưa
                 String check_querr = "SELECT * FROM SINHVIEN WHERE SINHVIEN.MSSV = "+ mssv;
                 Cursor cursor = database.rawQuery(check_querr,null);

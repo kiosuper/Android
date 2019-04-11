@@ -30,7 +30,6 @@ public class SuaActivity extends AppCompatActivity {
     private Button btn_sua;
     private Button btn_huy;
     private Button btn_capnhat;
-    private CheckBox cb_chon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +58,7 @@ public class SuaActivity extends AppCompatActivity {
                     Toast.makeText(SuaActivity.this,"Hãy nhập mssv",Toast.LENGTH_SHORT).show();
                     return;
                 }
+                //lấy số biên lai
                 String get_so_bl_query = "SELECT * FROM BIENLAIHOCPHI WHERE MSSV = ?";
                 Cursor cursor = database.rawQuery(get_so_bl_query,new String[]{mssv});
                 cursor.moveToPosition(0);
@@ -76,12 +76,17 @@ public class SuaActivity extends AppCompatActivity {
                 for (int mon:check_mon){
                     String insert_query = "INSERT INTO THONGTINHOCPHI (SOBL,MAMH) VALUES ("+so_bl+","+mon+")";
                     database.execSQL(insert_query);
-                    Log.d("Query",insert_query);
                 }
                 //Update giá tiền
                 database.execSQL("UPDATE THONGTINHOCPHI SET SOTIEN = (SELECT MONHOC.SOTIEN FROM MONHOC WHERE MONHOC.MAMH = THONGTINHOCPHI.MAMH) WHERE EXISTS(SELECT * FROM MONHOC WHERE MONHOC.MAMH = THONGTINHOCPHI.MAMH)");
                 finish();
                 Toast.makeText(SuaActivity.this,"Cập nhật môn thành công",Toast.LENGTH_SHORT).show();
+            }
+        });
+        btn_huy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
     }
@@ -104,21 +109,32 @@ public class SuaActivity extends AppCompatActivity {
                     Toast.makeText(SuaActivity.this,"Hãy nhập mssv",Toast.LENGTH_SHORT).show();
                     return;
                 }
+                //lấy  tên + sdt sinh viên
+                String query = "SELECT SINHVIEN.HOTENSV,SINHVIEN.SODT FROM SINHVIEN WHERE SINHVIEN.MSSV = "+mssv;
+                Cursor cursor = database.rawQuery(query,null);
+                cursor.moveToFirst();
+                String name = cursor.getString(0);
+                String sdt = cursor.getString(1);
+                txt_hoten.setText(name);
+                txt_mssv.setText(mssv);
+                txt_so_dt.setText(sdt);
+                cursor.close();
                 String query_2 = "SELECT DISTINCT MONHOC.MAMH FROM MONHOC,THONGTINHOCPHI,BIENLAIHOCPHI,SINHVIEN WHERE THONGTINHOCPHI.MAMH = MONHOC.MAMH AND (((THONGTINHOCPHI.SOBL = BIENLAIHOCPHI.SOBL) AND BIENLAIHOCPHI.MSSV = SINHVIEN.MSSV) AND SINHVIEN.MSSV = " + mssv + ")";
                 //check xem mssv có trong database không
-                Cursor cursor1 = database.rawQuery(query_2, null);
-                if (cursor1.getCount() == 0){
+                cursor = database.rawQuery(query_2, null);
+                if (cursor.getCount() == 0){
                     Toast.makeText(SuaActivity.this,"Chỉ sinh viên đã đăng kí được sửa",Toast.LENGTH_SHORT).show();
                     return;
                 }
-                for (int j = 0; j < cursor1.getCount(); j++) {
-                    cursor1.moveToPosition(j);
-                    int id = cursor1.getInt(0);
+                for (int j = 0; j < cursor.getCount(); j++) {
+                    cursor.moveToPosition(j);
+                    int id = cursor.getInt(0);
                     checklist.add(id);
                 }
+                cursor.close();
                 //lấy dữ liệu môn học
-                String query = "SELECT * FROM MONHOC";
-                Cursor cursor = database.rawQuery(query, null);
+                String get_MONHOC_query = "SELECT * FROM MONHOC";
+                cursor = database.rawQuery(get_MONHOC_query, null);
                 for (int i = 0; i < cursor.getCount(); i++) {
                     cursor.moveToPosition(i);
                     boolean checked = false;
@@ -150,7 +166,6 @@ public class SuaActivity extends AppCompatActivity {
         btn_huy = findViewById(R.id.btn_huy);
         btn_sua = findViewById(R.id.btn_sua);
         btn_capnhat = findViewById(R.id.btn_capnhat);
-        cb_chon = findViewById(R.id.cb_chon);
     }
 
     public void initDatabase() {
