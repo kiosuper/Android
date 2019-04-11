@@ -6,7 +6,7 @@
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Đăng ký môn học"
+        android:text="Đăng kí môn học"
         android:textSize="30dp"
         android:gravity="center"
         android:textStyle="bold"/>
@@ -37,7 +37,7 @@
 
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="MSSV: "
+            android:text="Mã số sinh viên: "
             android:textSize="20dp"
             />
         <EditText
@@ -63,7 +63,7 @@
             android:layout_height="wrap_content" />
     </LinearLayout>
     <LinearLayout
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="15dp"
         android:background="@color/colorAccent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -131,7 +131,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Đăng ký"/>
+            android:text="Đăng kí"/>
         <Button
             android:id="@+id/btn_huy"
             android:layout_width="wrap_content"
