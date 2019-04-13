@@ -4,6 +4,6 @@
 	
 	Nguyễn Quang Huy - N15DCAT026 - BÀI 5
 	
-	Nguyễn Phú Quang - N15DCAT045 - BÀI 3
+	Nguyễn Phú Quang - N15DCAT045 - BÀI 2, 3
 	
-	Nguyễn Vũ Việt Huy - N15DCAT027 - BÀI 2, 4
+	Nguyễn Vũ Việt Huy - N15DCAT027 - BÀI 4
