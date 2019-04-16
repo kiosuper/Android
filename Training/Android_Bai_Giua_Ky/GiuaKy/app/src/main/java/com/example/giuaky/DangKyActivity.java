@@ -70,19 +70,19 @@ public class DangKyActivity extends AppCompatActivity {
                     return;
                 }
                 //check xem đã đăng kí chưa
-                String check_querr = "SELECT * FROM SINHVIEN WHERE SINHVIEN.MSSV = "+ mssv;
+                String check_querr = "SELECT * FROM SINHVIEN WHERE SINHVIEN.MSSV = ("+ "\""+mssv+"\"" +")";
                 Cursor cursor = database.rawQuery(check_querr,null);
                 if (cursor.getCount() != 0){
                     Toast.makeText(DangKyActivity.this, "Bạn đã đăng kí rồi, hãy vào mục sửa để sửa", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 cursor.close();
-                String insert_query = "INSERT INTO SINHVIEN(MSSV,SODT,HOTENSV) VALUES ("+mssv+","+sdt+","+"\"" + ho_ten + "\""+")";
+                String insert_query = "INSERT INTO SINHVIEN(MSSV,SODT,HOTENSV) VALUES ("+ "\""+mssv+"\"" +","+sdt+","+"\"" + ho_ten + "\""+")";
                 Log.d("query",insert_query);
                 database.execSQL(insert_query);
-                String insert_query_2 = "INSERT INTO BIENLAIHOCPHI (NGAYHP,MSSV) VALUES (date('now')," + mssv+ ")";
+                String insert_query_2 = "INSERT INTO BIENLAIHOCPHI (NGAYHP,MSSV) VALUES (date('now')," + "\""+mssv+"\"" + ")";
                 database.execSQL(insert_query_2);
-                cursor = database.rawQuery("SELECT * FROM BIENLAIHOCPHI WHERE MSSV = ?",new String[]{mssv});
+                cursor = database.rawQuery("SELECT * FROM BIENLAIHOCPHI WHERE MSSV = ("+"\""+mssv+"\""+")",null);
                 cursor.moveToFirst();
                 int so_bl = cursor.getInt(0);
                 Log.d("so bien lai", String.valueOf(so_bl));

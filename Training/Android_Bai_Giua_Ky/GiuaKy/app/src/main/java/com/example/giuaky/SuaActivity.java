@@ -110,7 +110,7 @@ public class SuaActivity extends AppCompatActivity {
                     return;
                 }
                 //lấy  tên + sdt sinh viên
-                String query = "SELECT SINHVIEN.HOTENSV,SINHVIEN.SODT FROM SINHVIEN WHERE SINHVIEN.MSSV = "+mssv;
+                String query = "SELECT SINHVIEN.HOTENSV,SINHVIEN.SODT FROM SINHVIEN WHERE SINHVIEN.MSSV = ("+ "\""+mssv+"\"" +")";
                 Cursor cursor = database.rawQuery(query,null);
                 cursor.moveToFirst();
                 String name = cursor.getString(0);
@@ -119,7 +119,7 @@ public class SuaActivity extends AppCompatActivity {
                 txt_mssv.setText(mssv);
                 txt_so_dt.setText(sdt);
                 cursor.close();
-                String query_2 = "SELECT DISTINCT MONHOC.MAMH FROM MONHOC,THONGTINHOCPHI,BIENLAIHOCPHI,SINHVIEN WHERE THONGTINHOCPHI.MAMH = MONHOC.MAMH AND (((THONGTINHOCPHI.SOBL = BIENLAIHOCPHI.SOBL) AND BIENLAIHOCPHI.MSSV = SINHVIEN.MSSV) AND SINHVIEN.MSSV = " + mssv + ")";
+                String query_2 = "SELECT DISTINCT MONHOC.MAMH FROM MONHOC,THONGTINHOCPHI,BIENLAIHOCPHI,SINHVIEN WHERE THONGTINHOCPHI.MAMH = MONHOC.MAMH AND (((THONGTINHOCPHI.SOBL = BIENLAIHOCPHI.SOBL) AND BIENLAIHOCPHI.MSSV = SINHVIEN.MSSV) AND SINHVIEN.MSSV = (" + "\""+mssv+"\"" + "))";
                 //check xem mssv có trong database không
                 cursor = database.rawQuery(query_2, null);
                 if (cursor.getCount() == 0){
