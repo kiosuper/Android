@@ -59,7 +59,6 @@ public class XemActivity extends AppCompatActivity {
                     Toast.makeText(XemActivity.this,"Hãy nhập mssv",Toast.LENGTH_SHORT).show();
                     return;
                 }
-                //lấy thông tin sv + môn học
                 String query = "SELECT DISTINCT SINHVIEN.HOTENSV,SINHVIEN.SODT,MONHOC.MAMH,MONHOC.TENMH,MONHOC.SOTC,MONHOC.SOTIEN FROM MONHOC,THONGTINHOCPHI,BIENLAIHOCPHI,SINHVIEN WHERE THONGTINHOCPHI.MAMH = MONHOC.MAMH AND (((THONGTINHOCPHI.SOBL = BIENLAIHOCPHI.SOBL) AND BIENLAIHOCPHI.MSSV = SINHVIEN.MSSV) AND SINHVIEN.MSSV = "+ "\""+mssv+"\"" +")";
                 Cursor cursor = database.rawQuery(query,null);
                 int count = cursor.getCount();
@@ -73,10 +72,6 @@ public class XemActivity extends AppCompatActivity {
                 txt_hoten.setText(name);
                 txt_mssv.setText(mssv);
                 txt_so_dt.setText(sdt);
-                if (count == 0){
-                    Toast.makeText(XemActivity.this, "Chỉ sinh viên đã đăng kí có thể xem học phần", Toast.LENGTH_SHORT).show();
-                    return;
-                }
                 for (int i=0;i<count;i++){
                     cursor.moveToPosition(i);
                     int id = cursor.getInt(2);
