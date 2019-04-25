@@ -1,5 +1,8 @@
 package com.example.giuaky;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -53,7 +56,7 @@ public class SuaActivity extends AppCompatActivity {
                         check_mon.add(arraylist.get(i).ma_mh);
                     }
                 }
-                String mssv = edt_mssv.getText().toString();
+                final String mssv = edt_mssv.getText().toString();
                 if (mssv.matches("")){
                     Toast.makeText(SuaActivity.this,"Hãy nhập mssv",Toast.LENGTH_SHORT).show();
                     return;
@@ -67,20 +70,44 @@ public class SuaActivity extends AppCompatActivity {
                     return;
                 }
                 //lấy số biên lai của user
-                int so_bl = cursor.getInt(0);
+                final int so_bl = cursor.getInt(0);
                 //Delete số biên lai cũ bảng
                 cursor.close();
                 String del_query = "DELETE FROM THONGTINHOCPHI WHERE SOBL = " + so_bl;
                 database.execSQL(del_query);
                 //Insert database theo các môn user đã tích ở trên
-                for (int mon:check_mon){
-                    String insert_query = "INSERT INTO THONGTINHOCPHI (SOBL,MAMH) VALUES ("+so_bl+","+mon+")";
-                    database.execSQL(insert_query);
+                if (check_mon.isEmpty()) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(SuaActivity.this);
+                    builder.setTitle("Cảnh báo !!");
+                    builder.setMessage("Bạn có muốn xóa học phần không ?");
+                    builder.setPositiveButton("Có", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            database.execSQL("DELETE FROM THONGTINHOCPHI WHERE SOBL = "+ so_bl);
+                            database.execSQL("DELETE FROM BIENLAIHOCPHI WHERE SOBL = "+so_bl);
+                            database.execSQL("DELETE FROM SINHVIEN WHERE MSSV = ("+ "\""+mssv+"\"" +")");
+                            finish();
+                            Toast.makeText(SuaActivity.this,"Bạn đã xóa học phần !!",Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    builder.setNegativeButton("Không", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            return;
+                        }
+                    });
+                    builder.create().show();
                 }
-                //Update giá tiền
-                database.execSQL("UPDATE THONGTINHOCPHI SET SOTIEN = (SELECT MONHOC.SOTIEN FROM MONHOC WHERE MONHOC.MAMH = THONGTINHOCPHI.MAMH) WHERE EXISTS(SELECT * FROM MONHOC WHERE MONHOC.MAMH = THONGTINHOCPHI.MAMH)");
-                finish();
-                Toast.makeText(SuaActivity.this,"Cập nhật môn thành công",Toast.LENGTH_SHORT).show();
+                else {
+                    for (int mon : check_mon) {
+                        String insert_query = "INSERT INTO THONGTINHOCPHI (SOBL,MAMH) VALUES (" + so_bl + "," + mon + ")";
+                        database.execSQL(insert_query);
+                        //Update giá tiền
+                        database.execSQL("UPDATE THONGTINHOCPHI SET SOTIEN = (SELECT MONHOC.SOTIEN FROM MONHOC WHERE MONHOC.MAMH = THONGTINHOCPHI.MAMH) WHERE EXISTS(SELECT * FROM MONHOC WHERE MONHOC.MAMH = THONGTINHOCPHI.MAMH)");
+                        finish();
+                        Toast.makeText(SuaActivity.this,"Cập nhật môn thành công",Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
         });
         btn_huy.setOnClickListener(new View.OnClickListener() {
@@ -112,6 +139,10 @@ public class SuaActivity extends AppCompatActivity {
                 //lấy  tên + sdt sinh viên
                 String query = "SELECT SINHVIEN.HOTENSV,SINHVIEN.SODT FROM SINHVIEN WHERE SINHVIEN.MSSV = ("+ "\""+mssv+"\"" +")";
                 Cursor cursor = database.rawQuery(query,null);
+                if (cursor.getCount() == 0){
+                    Toast.makeText(SuaActivity.this,"Chỉ sinh viên đã đăng kí được sửa",Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 cursor.moveToFirst();
                 String name = cursor.getString(0);
                 String sdt = cursor.getString(1);
@@ -122,10 +153,6 @@ public class SuaActivity extends AppCompatActivity {
                 String query_2 = "SELECT DISTINCT MONHOC.MAMH FROM MONHOC,THONGTINHOCPHI,BIENLAIHOCPHI,SINHVIEN WHERE THONGTINHOCPHI.MAMH = MONHOC.MAMH AND (((THONGTINHOCPHI.SOBL = BIENLAIHOCPHI.SOBL) AND BIENLAIHOCPHI.MSSV = SINHVIEN.MSSV) AND SINHVIEN.MSSV = (" + "\""+mssv+"\"" + "))";
                 //check xem mssv có trong database không
                 cursor = database.rawQuery(query_2, null);
-                if (cursor.getCount() == 0){
-                    Toast.makeText(SuaActivity.this,"Chỉ sinh viên đã đăng kí được sửa",Toast.LENGTH_SHORT).show();
-                    return;
-                }
                 for (int j = 0; j < cursor.getCount(); j++) {
                     cursor.moveToPosition(j);
                     int id = cursor.getInt(0);
