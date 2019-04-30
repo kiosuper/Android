@@ -3,7 +3,6 @@
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <TextView
-
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Đăng kí môn học"
@@ -22,8 +21,9 @@
             android:text="Họ và tên: "
             android:textSize="20dp"
             />
-        <EditText
-            android:id="@+id/edt_hoten"
+        <TextView
+            android:textSize="20dp"
+            android:id="@+id/txt_hoten"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>
@@ -34,14 +34,14 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <TextView
-
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Mã số sinh viên: "
             android:textSize="20dp"
             />
-        <EditText
-            android:id="@+id/edt_mssv"
+        <TextView
+            android:textSize="20dp"
+            android:id="@+id/txt_mssv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>
@@ -57,8 +57,9 @@
             android:text="Số điện thoại: "
             android:textSize="20dp"
             />
-        <EditText
-            android:id="@+id/edt_sdt"
+        <TextView
+            android:textSize="20dp"
+            android:id="@+id/txt_sodt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>
