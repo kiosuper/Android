@@ -7,9 +7,8 @@ import android.view.View;
 import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
-    private Button btn_xem;
-    private Button btn_sua;
-    private Button btn_dangki;
+    private Button btn_sinhvien;
+    private Button btn_giaovien;
     private Button btn_thoat;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,9 +20,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setControls(){
-        btn_xem = findViewById(R.id.btn_xem);
-        btn_dangki = findViewById(R.id.btn_dangki);
-        btn_sua = findViewById(R.id.btn_sua);
+        btn_sinhvien = findViewById(R.id.btn_sinhvien);
+        btn_giaovien = findViewById(R.id.btn_giaovien);
         btn_thoat = findViewById(R.id.btn_thoat);
     }
 
@@ -35,24 +33,17 @@ public class MainActivity extends AppCompatActivity {
                 System.exit(0);
             }
         });
-        btn_xem.setOnClickListener(new View.OnClickListener() {
+        btn_sinhvien.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this,XemActivity.class);
+                Intent intent = new Intent(MainActivity.this,IndexSinhVienActivity.class);
                 startActivity(intent);
             }
         });
-        btn_sua.setOnClickListener(new View.OnClickListener() {
+        btn_giaovien.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this,SuaActivity.class);
-                startActivity(intent);
-            }
-        });
-        btn_dangki.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this,DangKyActivity.class);
+                Intent intent = new Intent(MainActivity.this,IndexGiaoVienActivity.class);
                 startActivity(intent);
             }
         });

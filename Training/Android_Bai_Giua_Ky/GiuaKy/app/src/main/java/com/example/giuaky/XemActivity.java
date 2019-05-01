@@ -1,5 +1,6 @@
 package com.example.giuaky;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -19,13 +20,13 @@ public class XemActivity extends AppCompatActivity {
     ArrayList<MonHoc> arraylist;
     private ListView listView;
     MonHocAdapter adapter;
+    String mssv;
 
-    private Button btn_thoat;
-    private Button btn_xem;
-    private EditText edt_mssv;
     private TextView txt_hoten;
     private TextView txt_so_dt;
     private TextView txt_mssv;
+    private TextView txt_sobl;
+    private TextView txt_ngay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,65 +37,54 @@ public class XemActivity extends AppCompatActivity {
         setEvent();
     }
 
-    public void setControl(){
-        btn_xem = findViewById(R.id.btn_xem);
-        edt_mssv = findViewById(R.id.edt_mssv);
+    public void setControl() {
         txt_hoten = findViewById(R.id.txt_hoten);
         txt_so_dt = findViewById(R.id.txt_so_dt);
         txt_mssv = findViewById(R.id.txt_mssv);
-        btn_thoat = findViewById(R.id.btn_thoat);
+        txt_ngay = findViewById(R.id.txt_ngaydangki);
+        txt_sobl = findViewById(R.id.txt_sobl);
     }
 
-    public void setEvent(){
+    public void setEvent() {
+        Intent intent = getIntent();
+        mssv = intent.getStringExtra("mssv");
         listView = findViewById(R.id.lv_xem);
         arraylist = new ArrayList<>();
-        adapter = new MonHocAdapter(this,R.layout.xem_item,arraylist);
+        adapter = new MonHocAdapter(this, R.layout.xem_item, arraylist);
         listView.setAdapter(adapter);
-        btn_xem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                arraylist.clear();
-                String mssv = edt_mssv.getText().toString();
-                if (mssv.matches("")){
-                    Toast.makeText(XemActivity.this,"Hãy nhập mssv",Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                String query = "SELECT DISTINCT SINHVIEN.HOTENSV,SINHVIEN.SODT,MONHOC.MAMH,MONHOC.TENMH,MONHOC.SOTC,MONHOC.SOTIEN FROM MONHOC,THONGTINHOCPHI,BIENLAIHOCPHI,SINHVIEN WHERE THONGTINHOCPHI.MAMH = MONHOC.MAMH AND (((THONGTINHOCPHI.SOBL = BIENLAIHOCPHI.SOBL) AND BIENLAIHOCPHI.MSSV = SINHVIEN.MSSV) AND SINHVIEN.MSSV = "+ "\""+mssv+"\"" +")";
-                Cursor cursor = database.rawQuery(query,null);
-                int count = cursor.getCount();
-                cursor.moveToPosition(0);
-                if (cursor.getCount() == 0){
-                    Toast.makeText(XemActivity.this,"Bạn chưa đăng kí học phần",Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                String name = cursor.getString(0);
-                String sdt = cursor.getString(1);
-                txt_hoten.setText(name);
-                txt_mssv.setText(mssv);
-                txt_so_dt.setText(sdt);
-                for (int i=0;i<count;i++){
-                    cursor.moveToPosition(i);
-                    int id = cursor.getInt(2);
-                    String ten_mh = cursor.getString(3);
-                    int so_tc = cursor.getInt(4);
-                    String so_tien = cursor.getString(5);
-                    arraylist.add(new MonHoc(ten_mh,id,so_tc,so_tien));
-                }
-                adapter.notifyDataSetChanged();
-            }
-        });
-        btn_thoat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        arraylist.clear();
+        String query = "SELECT DISTINCT SINHVIEN.HOTENSV,SINHVIEN.SODT,MONHOC.MAMH,MONHOC.TENMH,MONHOC.SOTC,MONHOC.SOTIEN FROM MONHOC,THONGTINHOCPHI,BIENLAIHOCPHI,SINHVIEN WHERE THONGTINHOCPHI.MAMH = MONHOC.MAMH AND (((THONGTINHOCPHI.SOBL = BIENLAIHOCPHI.SOBL) AND BIENLAIHOCPHI.MSSV = SINHVIEN.MSSV) AND SINHVIEN.MSSV = " + "\"" + mssv + "\"" + ")";
+        Cursor cursor = database.rawQuery(query, null);
+        int count = cursor.getCount();
+        cursor.moveToPosition(0);
+        String name = cursor.getString(0);
+        String sdt = cursor.getString(1);
+        txt_hoten.setText(name);
+        txt_mssv.setText(mssv);
+        txt_so_dt.setText(sdt);
+        for (int i = 0; i < count; i++) {
+            cursor.moveToPosition(i);
+            int id = cursor.getInt(2);
+            String ten_mh = cursor.getString(3);
+            int so_tc = cursor.getInt(4);
+            String so_tien = cursor.getString(5);
+            arraylist.add(new MonHoc(ten_mh, id, so_tc, so_tien));
+        }
+        cursor.close();
+        String get_info_bl = "SELECT * FROM BIENLAIHOCPHI WHERE MSSV = " + "\"" + mssv +"\"";
+        cursor = database.rawQuery(get_info_bl,null);
+        cursor.moveToFirst();
+        String sobl = cursor.getString(0);
+        String ngay = cursor.getString(1);
+        txt_sobl.setText(sobl);
+        txt_ngay.setText(ngay);
+        adapter.notifyDataSetChanged();
     }
 
-    public void initDatabase(){
-        database = Database.initDatabase(XemActivity.this,database_name);
-        Cursor cursor = database.rawQuery("SELECT * from SINHVIEN",null);
-        if(!cursor.moveToFirst()){
+    public void initDatabase() {
+        database = Database.initDatabase(XemActivity.this, database_name);
+        Cursor cursor = database.rawQuery("SELECT * from SINHVIEN", null);
+        if (!cursor.moveToFirst()) {
             Toast.makeText(XemActivity.this, "Fail to connect to database", Toast.LENGTH_SHORT).show();
         }
     }

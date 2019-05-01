@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout
+        android:layout_marginTop="25dp"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MSSV: "
+            android:textSize="25dp"/>
+        <Spinner
+            android:id="@+id/spinner_mssv"
+            android:layout_width="250dp"
+            android:layout_height="match_parent"></Spinner>
+    </LinearLayout>
+    <Button
+        android:id="@+id/btn_dangki"
+        android:layout_marginTop="40dp"
+        android:layout_gravity="center"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:text="Đăng Ký"/>
+    <Button
+        android:id="@+id/btn_sua"
+        android:layout_marginTop="15dp"
+        android:layout_gravity="center"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:text="Sửa"/>
+    <Button
+        android:id="@+id/btn_xem"
+        android:layout_marginTop="15dp"
+        android:layout_gravity="center"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:text="Xem Biên lai"/>
+    <Button
+        android:id="@+id/btn_thoat"
+        android:layout_marginTop="15dp"
+        android:layout_gravity="center"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:text="Thoát"/>
+</LinearLayout>

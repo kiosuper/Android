@@ -31,31 +31,24 @@
            android:layout_width="match_parent"
            android:layout_height="wrap_content">
            <Button
-               android:id="@+id/btn_dangki"
+               android:id="@+id/btn_giaovien"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
-               android:text="Đăng kí"
+               android:text="Giáo viên"
                android:layout_weight="1"/>
            <Button
-               android:id="@+id/btn_sua"
+               android:id="@+id/btn_sinhvien"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
-               android:text="Sửa"
+               android:text="Sinh viên"
                android:layout_weight="1">
 
            </Button>
        </LinearLayout>
        <LinearLayout
-
            android:layout_marginTop="10dp"
            android:layout_width="match_parent"
            android:layout_height="wrap_content">
-           <Button
-               android:id="@+id/btn_xem"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:text="Xem"
-               android:layout_weight="1"/>
            <Button
                android:id="@+id/btn_thoat"
                android:layout_width="wrap_content"

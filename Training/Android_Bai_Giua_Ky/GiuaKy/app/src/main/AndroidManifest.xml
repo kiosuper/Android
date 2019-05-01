@@ -19,6 +19,8 @@
         <activity android:name=".XemActivity"></activity>
         <activity android:name=".SuaActivity"></activity>
         <activity android:name=".DangKyActivity"></activity>
+        <activity android:name=".IndexSinhVienActivity"></activity>
+        <activity android:name=".IndexGiaoVienActivity"></activity>
     </application>
 
 </manifest>
