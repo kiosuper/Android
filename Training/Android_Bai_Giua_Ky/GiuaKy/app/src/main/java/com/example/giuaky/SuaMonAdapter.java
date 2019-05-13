@@ -16,14 +16,12 @@ public class SuaMonAdapter extends ArrayAdapter <MonHoc>{
     Context context;
     int layoutResourceId;
     ArrayList<MonHoc> data = null;
-    SparseBooleanArray mCheckStates;
 
     public SuaMonAdapter(Context context, int layoutResourceId, ArrayList<MonHoc> data) {
         super(context, layoutResourceId, data);
         this.context = context;
         this.layoutResourceId = layoutResourceId;
         this.data = data;
-        mCheckStates = new SparseBooleanArray(data.size());
     }
 
     public View getView(final int position, View convertView, ViewGroup parent) {

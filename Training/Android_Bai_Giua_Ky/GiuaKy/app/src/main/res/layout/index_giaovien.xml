@@ -55,7 +55,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Họ và tên: "
+            android:text="Số điện thoại"
             android:textSize="20dp"
             />
         <EditText
